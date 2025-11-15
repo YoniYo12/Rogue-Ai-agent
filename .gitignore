@@ -1,0 +1,21 @@
+# Backend
+backend/venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/.env
+
+# Frontend
+yohan/node_modules/
+yohan/dist/
+
+# Global
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+node_modules/
+.DS_Store
+Thumbs.db
