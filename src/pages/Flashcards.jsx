@@ -3,16 +3,27 @@ import { useState } from "react";
 export default function Flashcards() {
   const [topic, setTopic] = useState("");
   const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  
-  const sampleFlashcards = [
-    { question: "What is AI?", answer: "AI is the simulation of human intelligence by machines." },
-    { question: "What is Python?", answer: "A popular programming language used for AI and backend development." },
-    { question: "What is React?", answer: "A JavaScript library for building user interfaces." },
-  ];
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
 
-  const handleGenerate = () => {
-    setCards(sampleFlashcards);
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/flashcards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic }),
+      });
+
+      const data = await response.json();
+      setCards(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -20,10 +31,9 @@ export default function Flashcards() {
       <h1 style={{ fontSize: "40px", marginBottom: "20px" }}>Flashcards</h1>
 
       <p style={{ color: "#555", marginBottom: "20px" }}>
-        Enter a topic, and Rogue will generate flashcards for you.
+        Enter a topic, and Yohan will generate flashcards for you.
       </p>
 
-   
       <input
         type="text"
         value={topic}
@@ -38,10 +48,10 @@ export default function Flashcards() {
         }}
       />
 
-   
-      <button onClick={handleGenerate}>Generate Flashcards</button>
+      <button onClick={handleGenerate}>
+        {loading ? "Generating..." : "Generate Flashcards"}
+      </button>
 
-     
       <div
         style={{
           display: "grid",

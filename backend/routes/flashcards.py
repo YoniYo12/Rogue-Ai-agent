@@ -1,15 +1,27 @@
-from flask import Blueprint,request,jsonify
+from flask import Blueprint, request, jsonify
 from services.openai_service import ask_openai
 import json
 
-flashcards_bp = Blueprint("flashcards",__name__)
+flashcards_bp = Blueprint("flashcards_bp", __name__)
 
-@flashcards_bp.route("/flashcards",methods=["POST"])
+@flashcards_bp.route("/api/flashcards", methods=["POST"])
 def generate_flashcards():
-    data = request.json
-    topic = data.get("topic","")
+    data = request.get_json()
+    topic = data.get("topic")
 
-    prompt = f"Create 5 simple flashcards about {topic}. Return JSON list of objects with 'question' and 'answer'."
-    response = ask_openai(prompt)
+    prompt = f"""
+    Generate 5 study flashcards about {topic}.
+    Respond ONLY in JSON in this format:
+    [
+      {{"question": "string", "answer": "string"}},
+      ...
+    ]
+    """
 
-    return jsonify(json.loads(response))
+    ai_response = ask_openai(prompt)
+
+    try:
+        flashcards = json.loads(ai_response)
+        return jsonify(flashcards)
+    except:
+        return jsonify({"error": "Invalid JSON", "raw": ai_response}), 500
