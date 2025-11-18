@@ -1,5 +1,5 @@
-import os
 from openai import OpenAI
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,9 +10,9 @@ def ask_openai(prompt):
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are a tool that ONLY returns valid JSON. No explanations."},
+            {"role": "system", "content": "You are a helpful tutor."},
             {"role": "user", "content": prompt}
         ]
     )
-
+    
     return response.choices[0].message.content
